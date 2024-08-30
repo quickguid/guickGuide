@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        .responsive-iframe {
+            width: 100%;
+            height: 80vh; /* You can adjust this value based on your needs */
+        }
+    </style>
+    <script type="text/javascript">
+        function notifyVideoStart() {
+            fetch('/start-video', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ user_id: '123' }) // Replace '123' with actual user ID from your session or user context
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Video start recorded with action ID:", data.action_id);
+                sessionStorage.setItem('actionId', data.action_id); // Store action ID for later use
+            })
+            .catch(error => console.error("Error recording video start:", error));
+        }
+
+        window.addEventListener('message', function(event) {
+            // Check the origin of the data!
+            if (event.origin !== "http://127.0.0.1:5000/") { // Correct the origin URL
+                return;
+            }
+            if (event.data.eventType === 'buttonClick') {
+                const actionId = sessionStorage.getItem('Button_1');
+                fetch('/record-button-click', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action_id: actionId,
+                        click_time: event.data.clickTime
+                    })
+                })
+                .then(response => response.json())
+                .then(data => console.log("Button click recorded:", data))
+                .catch(error => console.error("Error recording button click:", error));
+            }
+        });
+    </script>
+</head>
+<body>
+    <h1>Welcome to the Home Page</h1>
+    <div>abode_files/prject4333/index.html
+        <iframe class="responsive-iframe" src="{{ url_for('static', filename='') }}" onload="notifyVideoStart()"></iframe>
+    </div>
+  
+</body>
+</html>
