@@ -1,34 +1,221 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>Action Counts</title>
-    <!-- Include Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-4">
-        <h1 class="mb-4">Action Counts</h1>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Action ID</th>
-                    <th>Count</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for action_id, count in action_counts %}
-                <tr>
-                    <td>{{ action_id }}</td>
-                    <td>{{ count }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<html lang="ar" dir="rtl">
 
-    <!-- Include Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Admin</title>
+  <meta name="description" content="">
+  <meta name="keywords" content="">
+
+
+  <link href="{{url_for('static',filename = 'assets/img/Quickguide_logo copy.png')}}" rel="icon">
+
+
+
+
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+
+
+  <link href="{{url_for('static',filename = 'assets/vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename = 'assets/vendor/bootstrap-icons/bootstrap-icons.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename = 'assets/vendor/aos/aos.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename = 'assets/vendor/glightbox/css/glightbox.min.css')}}" rel="stylesheet">
+  <link href="{{url_for('static',filename = 'assets/vendor/swiper/swiper-bundle.min.css')}}" rel="stylesheet">
+  <!-- Main CSS File -->
+  
+  <link href="{{url_for('static',filename = 'assets/css/main.css')}}" rel="stylesheet">
+
+</head>
+
+<body class="lessons-page">
+
+  <header id="header" class="header d-flex align-items-center fixed-top">
+    <div class="container-fluid container-xl position-relative d-flex align-items-center">
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href=""  class="active">لوحة التحكم </a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <a class="btn-getstarted"href="{{ url_for('auth.logout') }}">تسجيل الخروج</a>
+
+      <a href="{{ url_for('views.home') }}" class="logo d-flex align-items-center me-auto">
+        <img src=" {{url_for('static',filename = 'assets/img/Quickguide_logo.png')}}" alt=""> 
+       
+      </a>
+
+    </div>
+  </header>
+
+  <main class="main">
+
+
+    <section id="coursesheader" class="section accent-background">
+       
+    </section>
+
+
+       
+        <section id="user_action" class="user_action_">
+            <div class="container">
+              <!-- Search input -->
+              <input type="text" id="searchInput" onkeyup="searchTable()" placeholder="ابحث هنا...">
+              <button id="allActionsBtn">All Actions</button>
+          
+              <table id="actionsTable" class="table table-bordered section">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Session ID</th>
+                        <th>Lesson ID</th>
+                        <th>Action ID</th>
+                        <th>Time Clicked</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for action in actions_data %}
+                    <tr>
+                        <td>
+                            <a href="#" class="user-link" data-user-id="{{ action.user_id }}">
+                                {{ action.user_id }}
+                            </a>
+                        </td>
+                        <td>{{ action.session_id }}</td>
+                        <td>{{ action.lesson_id }}</td>
+                        <td>{{ action.action_id }}</td>
+                        <td>{{ action.time_clicked }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+            </div>
+          </section>
+          
+
+
+
+
+</main>
+
+<footer id="footer" class="footer accent-background">
+
+  <div class="container footer-top">
+    <div class="row gy-4">
+      <div class="col-lg-5 col-md-12 footer-about">
+        <a href="index.html" class="logo d-flex align-items-center">
+          <span class="sitename">Qickguide</span>
+        </a>
+        <p>نحن نركز على تحسين تجربة التعلم من خلال منهجية التعلم بالتجربة. نقدم لك أدوات تعليمية متطورة، موارد شاملة، وإرشادات عملية لمساعدتك على تطبيق ما تتعلمه في مواقف واقعية. من خلال تقييم ذاتي مستمر ودعم متخصص، نساعدك على تخصيص تجربة التعلم لتلبية احتياجاتك الفردية. اكتشف كيف يمكننا تحويل تعلمك إلى تجربة تفاعلية وفعّالة.</p>
+        <div class="social-links d-flex mt-4">
+          <a href=""><i class="bi bi-twitter-x"></i></a>
+          <a href=""><i class="bi bi-facebook"></i></a>
+          <a href=""><i class="bi bi-instagram"></i></a>
+          <a href=""><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+
+      <div class="col-lg-4 col-6 footer-links">
+      
+      </div>
+
+
+
+      <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
+        <h4>Contact Us</h4>
+        <p>A108 Adam Street</p>
+        <p>New York, NY 535022</p>
+        <p>United States</p>
+        <p class="mt-4"><strong>Phone:</strong> <span>+1 5589 55488 55</span></p>
+        <p><strong>Email:</strong> <span>info@example.com</span></p>
+      </div>
+
+    </div>
+  </div>
+
+
+
+</footer>
+
+
+<!-- Scroll Top -->
+<a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+<!-- Preloader -->
+<div id="preloader"></div>
+
+<!-- Vendor JS Files -->
+
+<script src="{{url_for('static',filename = 'assets/vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/php-email-form/validate.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/aos/aos.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/glightbox/js/glightbox.min.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/purecounter/purecounter_vanilla.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/swiper/swiper-bundle.min.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/imagesloaded/imagesloaded.pkgd.min.js')}}"></script>
+<script src="{{url_for('static',filename = 'assets/vendor/isotope-layout/isotope.pkgd.min.js')}}"></script>
+
+<!-- Main JS File -->
+<script src="{{url_for('static',filename = 'assets/js/main.js')}}"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // Use event delegation to handle click on dynamically added user links
+    $('#actionsTable tbody').on('click', 'a.user-link', function(event) {
+        event.preventDefault();
+        var userId = $(this).data('user-id');
+        
+        $.ajax({
+            url: '/get_user_actions/' + userId,
+            type: 'GET',
+            success: function(response) {
+                updateTable(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', error);
+            }
+        });
+    });
+
+    // Handle click on "All Actions" button to show all actions
+    $('#allActionsBtn').on('click', function() {
+        $.ajax({
+            url: '/get_all_actions',
+            type: 'GET',
+            success: function(response) {
+                updateTable(response);
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', error);
+            }
+        });
+    });
+
+    // Function to update the table with new data
+    function updateTable(data) {
+        // Clear the existing table rows
+        $('#actionsTable tbody').empty();
+        
+        // Loop through the data and append new rows
+        data.forEach(function(action) {
+            var row = '<tr>' +
+                '<td><a href="#" class="user-link" data-user-id="' + action.user_id + '">' + action.user_id + '</a></td>' +
+                '<td>' + action.session_id + '</td>' +
+                '<td>' + action.lesson_id + '</td>' +
+                '<td>' + action.action_id + '</td>' +
+                '<td>' + action.time_clicked + '</td>' +
+            '</tr>';
+            $('#actionsTable tbody').append(row);
+        });
+    }
+});
+</script>
 </body>
+
 </html>

@@ -38,8 +38,4 @@ def create_app():
     @login.user_loader
     def load_user(id):
         return User.query.get(int(id))  #if this changes to a string, remove int
-
-
-    
-
     return app

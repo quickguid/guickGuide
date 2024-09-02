@@ -22,7 +22,7 @@ class User(UserMixin, db.Model):
     last_name = db.Column(db.String(150))
     access = db.Column(db.Integer, default=0)
 
-    def __init__(self, email,first_name,last_name , password ,access=ACCESS['guest']):
+    def __init__(self, email,first_name,last_name , password ,access=ACCESS['user']):
        
         self.first_name = first_name
         self.last_name = last_name

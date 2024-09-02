@@ -28,29 +28,24 @@ def requires_access_level(access_level):
     return decorator
 
 
+@views.route('/', methods=['GET'])
+def home():
+    return render_template("index.html")
+
+
 @views.route('/lessons', methods=['GET'])
 @login_required
 def lesson():
-    lessons = Lesson.query.all()
+    lessons = Lesson.query.limit(2).all()
     return render_template("lessons.html", lessons=lessons)
 
-@views.route('/lesson/<int:lesson_id>', methods=['GET'])
-@login_required
-def show_lesson(lesson_id):
-    lesson = Lesson.query.get_or_404(lesson_id)
-    return render_template("show_lesson.html", lesson=lesson)
 
-    
-@requires_access_level(ACCESS['admin']) 
 @views.route('/admin')
+@requires_access_level(ACCESS['admin']) 
+@login_required
 def admin_dashboard():
-    # Query to get the count of each action_id
-    action_counts = db.session.query(
-        UserAction.action_id,
-        db.func.count(UserAction.id).label('count')
-    ).group_by(UserAction.action_id).all()
-
-    return render_template('admin.html', action_counts=action_counts)
+    actions_data = db.session.query(UserAction).all()
+    return render_template('admin.html', actions_data=actions_data)
 
 
 @views.route('/submit', methods=['POST'])
@@ -62,10 +57,52 @@ def submit():
     time_clicked_str = data.get('time_clicked')
     time_clicked = datetime.strptime(time_clicked_str, '%Y-%m-%dT%H:%M:%S.%fZ')
     user_id = current_user.id
-    session_id = session.get('session_id', 'No session ID found')
+    session_id = session.get('session_id')
     user_action = UserAction(user_id=user_id, session_id=session_id, lesson_id=lesson_id, action_id=action_id, time_clicked=time_clicked)
     db.session.add(user_action)
     db.session.commit()
-
     # Return a response
     return jsonify({'status': 'success', 'lesson_id': lesson_id, 'action_id': action_id, 'time_clicked': time_clicked})
+
+@views.route('/lessons/<item_id>')
+@login_required
+def show_lessons(item_id):
+    # Fetch the lesson from the database based on item_id
+    lesson = Lesson.query.get(item_id)
+    return render_template('show_lesson.html', lesson=lesson)
+
+
+@views.route('/get_user_actions/<int:user_id>')
+@login_required
+@requires_access_level(ACCESS['admin'])
+def get_user_actions(user_id):
+    user_actions = db.session.query(UserAction).filter_by(user_id=user_id).all()
+    
+    # Convert the actions to a list of dictionaries
+    actions_data = [{
+        'user_id': action.user_id,
+        'session_id': action.session_id,
+        'lesson_id': action.lesson_id,
+        'action_id': action.action_id,
+        'time_clicked': action.time_clicked.strftime('%Y-%m-%d %H:%M:%S')  # Formatting datetime to string
+    } for action in user_actions]
+    
+    return jsonify(actions_data)
+
+@views.route('/get_all_actions')
+@login_required
+@requires_access_level(ACCESS['admin'])
+def get_all_actions():
+    all_actions = db.session.query(UserAction).all()
+    
+    actions_data = [{
+        'user_id': action.user_id,
+        'session_id': action.session_id,
+        'lesson_id': action.lesson_id,
+        'action_id': action.action_id,
+        'time_clicked': action.time_clicked.strftime('%Y-%m-%d %H:%M:%S')
+    } for action in all_actions]
+    
+    return jsonify(actions_data)
+
+
